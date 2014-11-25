@@ -14,7 +14,7 @@ module Va
 
     def valid?
       self.class.validations.all? { |attrs, validation|
-        validation.call(attrs.map { |attr| self.send(attr)})
+        validation.call(*attrs.map { |attr| self.send(attr)})
       }
     end
 
