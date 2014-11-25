@@ -1,6 +1,12 @@
 # Va
 
-TODO: Write a gem description
+Va is a minimalistic,  framework agnostic, validation library.
+
+It is meant to be used as a first line of defense from external imputs.
+
+## Usage
+
+TODO: Write usage instructions here
 
 ## Installation
 
@@ -18,9 +24,6 @@ Or install it yourself as:
 
     $ gem install va
 
-## Usage
-
-TODO: Write usage instructions here
 
 ## Contributing
 
