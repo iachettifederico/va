@@ -84,7 +84,23 @@ For example, if we need the email to be present and the password and password va
 
 ### Predefined Validations
 
-TODO: Add basic validations
+#### Blank
+
+If you want to validate that a field is not blank, you can just say:
+
+```ruby
+  class Person < Va::Model
+    attribute :name
+    attribute :age
+    validate_present(:name, :age)
+  end
+```
+
+And if any of those attributes is either nil or an empty string, the validation will fail.
+
+#### More Validations
+
+TODO: Add more validations
 
 ## Installation
 

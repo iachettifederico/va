@@ -29,7 +29,7 @@ scope do
     end
   end
 end
-scope "validations" do
+scope "custom validations" do
   test "basic passing validation" do
     class VeryValid < Va::Model
       validate do
@@ -90,3 +90,4 @@ scope "validations" do
     end
   end
 end
+

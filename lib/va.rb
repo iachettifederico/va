@@ -30,6 +30,14 @@ module Va
       validations << [attrs, block]
     end
 
+    def self.validate_present(*attrs)
+      attrs.each do |attr|
+        validate(attr) do |a|
+          a && a != ""
+        end
+      end
+    end
+    
     def self.keys
       @keys ||= []
     end
