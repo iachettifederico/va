@@ -4,7 +4,7 @@ module Va
   class Model
     attr_reader :attributes
 
-    def initialize(**args)
+    def initialize(args={})
       @attributes = {}
       args.each do |k, v|
         key = k.to_sym

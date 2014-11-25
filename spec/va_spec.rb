@@ -7,7 +7,7 @@ scope do
   end
 
   test "init" do
-    va = Login.new(email: "fede@example.com", pass: "123456")
+    va = Login.new({"email" => "fede@example.com", pass: "123456"})
     assert_equal va.email, "fede@example.com"
     assert_equal va.pass,  "123456"
   end
