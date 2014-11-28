@@ -3,6 +3,7 @@ require "va/version"
 module Va
   class Model
     attr_reader :attributes
+    attr_reader :errors
 
     def initialize(args={})
       @attributes = {}
@@ -10,12 +11,26 @@ module Va
         key = k.to_sym
         @attributes[key] = v if self.class.keys.include?(key)
       end
+      @errors = {}
+      @valid = validate
     end
 
-    def valid?
-      self.class.validations.all? { |attrs, validation|
-        validation.call(*attrs.map { |attr| self.send(attr)})
+    def validate
+      invalid_validations = self.class.validations.select { |attrs, msg, validation|
+        is_invalid = !validation.call(*attrs.map { |attr| self.send(attr)})
+        key = attrs.count == 1 ? attrs.first : attrs
+        errors[key] = msg || "is invalid" if is_invalid
+        is_invalid
       }
+      invalid_validations.empty?
+    end
+
+    def message(msg="", *attrs)
+      raise __callee__.inspect
+    end
+    
+    def valid?
+      @valid
     end
 
     private
@@ -24,10 +39,13 @@ module Va
     end
 
     def self.validate(*attrs, &block)
+      msg = if attrs.last.is_a? String
+              attrs.pop
+            end
       attrs.each do |attr|
         raise UnknownAttribute unless keys.include?(attr)
       end
-      validations << [attrs, block]
+      validations << [attrs, msg, block]
     end
 
     def self.validate_present(*attrs)
