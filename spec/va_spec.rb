@@ -6,50 +6,52 @@ scope do
     attribute :pass
   end
 
-  test "init" do
-    va = Login.new({"email" => "fede@example.com", pass: "123456"})
-    assert_equal va.email, "fede@example.com"
-    assert_equal va.pass,  "123456"
+  scope "init" do
+    let(:va) { Login.new({"email" => "fede@example.com", pass: "123456"}) }
+
+    it { va.email == "fede@example.com" }
+    it { va.pass == "123456" }
   end
 
   scope "#attributes" do
-    test "all" do
-      va = Login.new(email: "fede@example.com", pass: "123456")
-      assert_equal va.attributes, { email: "fede@example.com", pass: "123456" }
+    spec "all" do
+      @va = Login.new(email: "fede@example.com", pass: "123456")
+      @va.attributes == { email: "fede@example.com", pass: "123456" }
     end
 
-    test "some" do
-      va =  Login.new(email: "fede@example.com")
-      assert_equal va.attributes, { email: "fede@example.com" }
+    spec "some" do
+      @va = Login.new(email: "fede@example.com")
+      @va.attributes == { email: "fede@example.com" }
     end
 
-    test "spureous" do
-      va =  Login.new(email: "fede@example.com", i_dont_belong_here: "HELLO!")
-      assert_equal va.attributes, { email: "fede@example.com" }
+    spec "spureous" do
+      @va = Login.new(email: "fede@example.com", i_dont_belong_here: "HELLO!")
+      @va.attributes == { email: "fede@example.com" }
     end
   end
 end
+
 scope "custom validations" do
-  test "basic passing validation" do
+  spec "basic passing validation" do
     class VeryValid < Va::Model
       validate do
         true
       end
     end
 
-    va = VeryValid.new
-    assert_equal va.valid?, true
+    @va = VeryValid.new
+    @va.valid?
   end
 
-  test "basic passing validation" do
+  spec "basic passing validation" do
     class VeryInvalid < Va::Model
       validate do
         false
       end
     end
 
-    va = VeryInvalid.new
-    assert_equal va.valid?, false
+    @va = VeryInvalid.new
+    ! @va.valid?
   end
 
   scope "A range validation" do
@@ -62,19 +64,19 @@ scope "custom validations" do
       end
     end
 
-    test "valid" do
-      r = MyRange.new(from: 1, to: 5)
-      assert_equal r.valid?, true
+    spec "valid" do
+      @r = MyRange.new(from: 1, to: 5)
+      @r.valid?
     end
 
-    test do
-      r = MyRange.new(from: 10, to: 5)
-      assert_equal r.valid?, false
+    spec do
+      @r = MyRange.new(from: 10, to: 5)
+      ! @r.valid?
     end
   end
 
   scope "can't validate" do
-    test "invalid arguments" do
+    spec "invalid arguments" do
       begin
         class FaceValidator < Va::Model
           attribute :face
@@ -83,11 +85,9 @@ scope "custom validations" do
             true
           end
         end
-        assert nil
       rescue Object => e
-        assert_equal e.class, Va::UnknownAttribute
+        e.class == Va::UnknownAttribute
       end
     end
   end
 end
-

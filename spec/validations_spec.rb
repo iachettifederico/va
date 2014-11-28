@@ -7,24 +7,25 @@ scope "basic validations" do
       attribute :age
       validate_present(:name, :age)
     end
-    test "passing" do
-      va = ANonBlankAttribute.new(name: "Fede", age: :of_ultron)
-      assert_equal va.valid?, true
+
+    spec "passing" do
+      @va = ANonBlankAttribute.new(name: "Fede", age: :of_ultron)
+      @va.valid?
     end
 
-    test "one empty string" do
-      va = ANonBlankAttribute.new(name: "", age: :of_ultron)
-      assert_equal va.valid?, false
+    spec "one empty string" do
+      @va = ANonBlankAttribute.new(name: "", age: :of_ultron)
+      ! @va.valid?
     end
 
-    test "one nil" do
-      va = ANonBlankAttribute.new(name: "Fede", age: nil)
-      assert_equal va.valid?, false
+    spec "one nil" do
+      @va = ANonBlankAttribute.new(name: "Fede", age: nil)
+      ! @va.valid?
     end
 
-    test "both empty" do
-      va = ANonBlankAttribute.new(name: nil, age: "")
-      assert_equal va.valid?, false
+    spec "both empty" do
+      @va = ANonBlankAttribute.new(name: nil, age: "")
+      ! @va.valid?
     end
   end
 end
