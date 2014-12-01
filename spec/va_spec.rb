@@ -15,8 +15,8 @@ scope do
 
   scope "#attributes" do
     spec "all" do
-      @va = Login.new(email: "fede@example.com", pass: "123456")
-      @va.attributes == { email: "fede@example.com", pass: "123456" }
+      @attributes = Login.new(email: "fede@example.com", pass: "123456").attributes
+      @attributes == { email: "fede@example.com", pass: "123456" }
     end
 
     spec "some" do
@@ -25,8 +25,8 @@ scope do
     end
 
     spec "spureous" do
-      @va = Login.new(email: "fede@example.com", i_dont_belong_here: "HELLO!")
-      @va.attributes == { email: "fede@example.com" }
+      @attributes = Login.new(email: "fede@example.com", i_dont_belong_here: "HELLO!").attributes
+      @attributes == { email: "fede@example.com" }
     end
   end
 end
@@ -89,5 +89,28 @@ scope "custom validations" do
         e.class == Va::UnknownAttribute
       end
     end
+  end
+end
+
+scope "default values" do
+  class MyDefaults < Va::Model
+    attribute :name, default: "N/A"
+    attribute :age
+  end
+
+  spec do
+    @attributes = MyDefaults.new(age: 30).attributes
+    @attributes == {name: "N/A", age: 30}
+  end
+
+  class BooleanDefaults < Va::Model
+    attribute :me_true,  default: true
+    attribute :me_false, default: false
+    attribute :not_me
+  end
+
+  spec do
+    @attributes = BooleanDefaults.new.attributes
+    @attributes == {me_true: true, me_false: false}
   end
 end

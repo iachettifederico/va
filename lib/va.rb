@@ -6,7 +6,7 @@ module Va
     attr_reader :errors
 
     def initialize(args={})
-      @attributes = {}
+      @attributes ||= self.class.defaults.dup
       args.each do |k, v|
         key = k.to_sym
         @attributes[key] = v if self.class.keys.include?(key)
@@ -28,7 +28,7 @@ module Va
     def message(msg="", *attrs)
       raise __callee__.inspect
     end
-    
+
     def valid?
       @valid
     end
@@ -55,15 +55,22 @@ module Va
         end
       end
     end
-    
+
     def self.keys
       @keys ||= []
     end
 
-    def self.attribute(attr_name)
+    def self.defaults
+      @defaults ||= {}
+    end
+
+    def self.attribute(attr_name, options={})
       name = attr_name.to_sym
 
       self.keys << name
+
+      default = options.fetch(:default) { NotSpecified }
+      self.defaults[name] = default unless default == NotSpecified
 
       define_method "#{name}=" do |value|
         attributes[name] = value
@@ -75,6 +82,5 @@ module Va
     end
   end
   class UnknownAttribute < Exception; end
+  class NotSpecified ; end
 end
-
-
