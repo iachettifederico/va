@@ -59,6 +59,31 @@ And if you pass a non-declared attribute, it will be ignored:
   # => #<Signup:0x000000015f8dd0 @attributes={:email=>"fede@example.com"}>
 ```
 
+### Default Values
+
+You can assign a default value for an attribute, in which case, if no value is provided, it will get assigned either way:
+
+```ruby
+  class UserValidator < Va::Model
+    attribute :name, default: "N/A"
+    attribute :admin,  default: false
+    attribute :editor, default: true
+    attribute :remember_me, default: true
+    attribute :age
+    attribute :height
+  end
+  
+  u = UserValidator.new(age: 30, remember_me: false)
+  u.attributes
+  # => {:name=>"N/A",
+  #     :admin=>false,
+  #     :editor=>true,
+  #     :remember_me=>false,
+  #     :age=>30}
+```
+
+Note that `age` and `remember_me` were set explicitly, `name`, `admin` and `editor` where set by default, and `height wasn't set at all.
+
 ### Custom Validations
 
 
