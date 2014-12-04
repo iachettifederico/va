@@ -1,1 +1,2 @@
-require File.expand_path("../../lib/va", __FILE__)
+$:.unshift(File.expand_path("../lib/", __dir__))
+require "va"

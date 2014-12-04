@@ -1,7 +1,7 @@
 require "va/version"
 
 module Va
-  class Model
+  class Validator
     attr_reader :attributes
     attr_reader :errors
 

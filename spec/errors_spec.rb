@@ -1,7 +1,7 @@
 require "./spec/spec_helper"
 
 scope "errors" do
-  class Truthy < Va::Model
+  class Truthy < Va::Validator
     attribute :t
     validate(:t, "not truthy") do |t|
       t
@@ -14,7 +14,7 @@ scope "errors" do
     @errors == { t: "not truthy"}
   end
 
-  class Falsey < Va::Model
+  class Falsey < Va::Validator
     attribute :f1
     attribute :f2
     validate(:f1, :f2, "not falsey") do |f1, f2|
@@ -28,7 +28,7 @@ scope "errors" do
     @errors == { [:f1, :f2] => "not falsey"}
   end
 
-  class WithoutMessages < Va::Model
+  class WithoutMessages < Va::Validator
     attribute :a
     attribute :b
 

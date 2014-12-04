@@ -1,7 +1,7 @@
 require "./spec/spec_helper"
 
 scope do
-  class Login < Va::Model
+  class Login < Va::Validator
     attribute :email
     attribute :pass
   end
@@ -33,7 +33,7 @@ end
 
 scope "custom validations" do
   spec "basic passing validation" do
-    class VeryValid < Va::Model
+    class VeryValid < Va::Validator
       validate do
         true
       end
@@ -44,7 +44,7 @@ scope "custom validations" do
   end
 
   spec "basic passing validation" do
-    class VeryInvalid < Va::Model
+    class VeryInvalid < Va::Validator
       validate do
         false
       end
@@ -55,7 +55,7 @@ scope "custom validations" do
   end
 
   scope "A range validation" do
-    class MyRange < Va::Model
+    class MyRange < Va::Validator
       attribute :from
       attribute :to
 
@@ -78,7 +78,7 @@ scope "custom validations" do
   scope "can't validate" do
     spec "invalid arguments" do
       begin
-        class FaceValidator < Va::Model
+        class FaceLidator < Va::Validator
           attribute :face
 
           validate(:leg) do |leg|
@@ -93,7 +93,7 @@ scope "custom validations" do
 end
 
 scope "default values" do
-  class MyDefaults < Va::Model
+  class MyDefaults < Va::Validator
     attribute :name, default: "N/A"
     attribute :age
   end

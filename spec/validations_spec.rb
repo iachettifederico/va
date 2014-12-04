@@ -2,7 +2,7 @@ require "./spec/spec_helper"
 
 scope "basic validations" do
   scope "non-blank" do
-    class ANonBlankAttribute < Va::Model
+    class ANonBlankAttribute < Va::Validator
       attribute :name
       attribute :age
       validate_present(:name, :age)
@@ -30,7 +30,7 @@ scope "basic validations" do
   end
 
   scope "non-nil" do
-    class ANotNilAttribute < Va::Model
+    class ANotNilAttribute < Va::Validator
       attribute :name
       attribute :age
       validate_not_nil(:name, :age)
