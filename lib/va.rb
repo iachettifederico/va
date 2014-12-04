@@ -55,6 +55,14 @@ module Va
         end
       end
     end
+    
+    def self.validate_not_nil(*attrs)
+      attrs.each do |attr|
+        validate(attr) do |a|
+          a != nil
+        end
+      end
+    end
 
     def self.keys
       @keys ||= []

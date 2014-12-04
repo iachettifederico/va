@@ -28,4 +28,38 @@ scope "basic validations" do
       ! @va.valid?
     end
   end
+
+  scope "non-nil" do
+    class ANotNilAttribute < Va::Model
+      attribute :name
+      attribute :age
+      validate_not_nil(:name, :age)
+    end
+
+    spec "passing" do
+      @va = ANotNilAttribute.new(name: "Fede", age: :of_ultron)
+      @va.valid?
+    end
+
+    spec "one empty string" do
+      @va = ANotNilAttribute.new(name: "", age: :of_ultron)
+      @va.valid?
+    end
+
+    spec "one nil" do
+      @va = ANotNilAttribute.new(name: "Fede", age: nil)
+      ! @va.valid?
+    end
+
+    spec "both empty" do
+      @va = ANotNilAttribute.new(name: nil, age: "")
+      ! @va.valid?
+    end
+
+    spec "both nil" do
+      @va = ANotNilAttribute.new(name: nil, age: nil)
+      ! @va.valid?
+    end
+  end
+
 end
