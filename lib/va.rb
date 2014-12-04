@@ -48,19 +48,21 @@ module Va
       validations << [attrs, msg, block]
     end
 
-    def self.validate_present(*attrs)
+    def self.validate_multiple(*attrs, &block)
       attrs.each do |attr|
-        validate(attr) do |a|
-          a && a != ""
-        end
+        validate(attr, &block)
       end
     end
-    
+
+    def self.validate_present(*attrs)
+      validate_multiple(*attrs) do |attr|
+        attr && attr != ""
+      end
+    end
+
     def self.validate_not_nil(*attrs)
-      attrs.each do |attr|
-        validate(attr) do |a|
-          a != nil
-        end
+      validate_multiple(*attrs) do |attr|
+          attr != nil
       end
     end
 

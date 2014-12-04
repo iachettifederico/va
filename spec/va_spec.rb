@@ -92,6 +92,33 @@ scope "custom validations" do
   end
 end
 
+scope "validate multiple" do
+  class Name < Va::Validator
+    attribute :first
+    attribute :last
+
+    validate_multiple(:first, :last) do |attr|
+      attr.size > 0
+    end
+  end
+
+  spec "passing" do
+    @va = Name.new(first: "Federico", last: "Iachetti")
+    @va.valid?
+  end
+
+  spec "all failing" do
+    @va = Name.new(first: "", last: "")
+    ! @va.valid?
+  end
+  
+  spec "one failing" do
+    @va = Name.new(first: "Federico", last: "")
+    ! @va.valid?
+  end
+end
+
+
 scope "default values" do
   class MyDefaults < Va::Validator
     attribute :name, default: "N/A"
@@ -103,7 +130,7 @@ scope "default values" do
     @attributes == {name: "N/A", age: 30}
   end
 
-  class BooleanDefaults < Va::Model
+  class BooleanDefaults < Va::Validator
     attribute :me_true,  default: true
     attribute :me_false, default: false
     attribute :not_me
