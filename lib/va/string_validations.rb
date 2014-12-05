@@ -3,7 +3,13 @@ module StringValidations
 
     def validate_string(*attrs)
       validate_multiple(*attrs) do |attr|
-          attr.is_a?(String) || attr.nil?
+        attr.is_a?(String) || attr.nil?
+      end
+    end
+
+    def validate_string_not_empty(*attrs)
+      validate_multiple(*attrs) do |attr|
+        attr.is_a?(String) && !attr.empty?
       end
     end
 
