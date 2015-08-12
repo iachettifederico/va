@@ -9,8 +9,8 @@ scope do
   scope "init" do
     let(:va) { Login.new({"email" => "fede@example.com", pass: "123456"}) }
 
-    it { va.email == "fede@example.com" }
-    it { va.pass == "123456" }
+    spec { va.email == "fede@example.com" }
+    spec { va.pass == "123456" }
   end
 
   scope "#attributes" do
@@ -22,11 +22,6 @@ scope do
     spec "some" do
       @va = Login.new(email: "fede@example.com")
       @va.attributes == { email: "fede@example.com" }
-    end
-
-    spec "spureous" do
-      @attributes = Login.new(email: "fede@example.com", i_dont_belong_here: "HELLO!").attributes
-      @attributes == { email: "fede@example.com" }
     end
   end
 end
@@ -77,7 +72,7 @@ scope "custom validations" do
 
   scope "can't validate" do
     spec "invalid arguments" do
-      begin
+      @ex = capture_exception(Va::UnknownAttribute) do
         class FaceLidator < Va::Validator
           attribute :face
 
@@ -85,10 +80,66 @@ scope "custom validations" do
             true
           end
         end
-      rescue Object => e
-        e.class == Va::UnknownAttribute
+
+        presenter.to_whatever
       end
+
+      @ex.is_a?(Va::UnknownAttribute)
     end
+  end
+end
+
+scope "raising UnauthorizedAttribute on initialization" do
+  class NonRaiser < Va::Validator
+    ignore_unauthorized_attributes
+    attribute :yes
+  end
+
+  class Raiser < Va::Validator
+    attribute :yes
+  end
+
+  spec "raising when passing one attribute" do
+    @ex = capture_exception(Va::UnauthorizedAttribute) do
+      @va = Raiser.new(no: :something)
+    end
+
+    @ex.is_a?(Va::UnauthorizedAttribute)
+  end
+
+  spec "raising when passing more than one attribute" do
+    @ex = capture_exception(Va::UnauthorizedAttribute) do
+      @va = Raiser.new(yes: :something, no: :something_else)
+    end
+
+    @ex.is_a?(Va::UnauthorizedAttribute)
+  end
+
+  spec "names the attribute name on the message" do
+    @ex = capture_exception(Va::UnauthorizedAttribute) do
+      @va = Raiser.new(attr_name: :something_else)
+    end
+
+    !! (@ex.message =~ /'attr_name'/)
+  end
+
+  spec "names the validator name on the message" do
+    @ex = capture_exception(Va::UnauthorizedAttribute) do
+      @va = Raiser.new(attr_name: :something_else)
+    end
+
+    !! (@ex.message =~ /'Raiser'/)
+  end
+
+  spec "not raising when passing one attribute" do
+    @va = NonRaiser.new(no: :something)
+    @va.valid?
+  end
+
+  spec "raising when passing more than one attribute" do
+    @va = NonRaiser.new(yes: :something, no: :something_else)
+
+    @va.valid?
   end
 end
 
@@ -111,13 +162,12 @@ scope "validate multiple" do
     @va = Name.new(first: "", last: "")
     ! @va.valid?
   end
-  
+
   spec "one failing" do
     @va = Name.new(first: "Federico", last: "")
     ! @va.valid?
   end
 end
-
 
 scope "default values" do
   class MyDefaults < Va::Validator

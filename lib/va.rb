@@ -9,7 +9,11 @@ module Va
       @attributes ||= self.class.defaults.dup
       args.each do |k, v|
         key = k.to_sym
-        @attributes[key] = v if self.class.keys.include?(key)
+        if self.class.keys.include?(key)
+          @attributes[key] = v
+        elsif ! self.class.ignore_unauthorized_attributes?
+          raise UnauthorizedAttribute.new(key, self)
+        end
       end
       @errors = {}
       @valid = validate
@@ -31,6 +35,14 @@ module Va
 
     def valid?
       @valid
+    end
+
+    def self.ignore_unauthorized_attributes
+      @__ignore_unauthorized_attributes__ = true
+    end
+
+    def self.ignore_unauthorized_attributes?
+      !! @__ignore_unauthorized_attributes__
     end
 
     private
@@ -62,7 +74,7 @@ module Va
 
     def self.validate_not_nil(*attrs)
       validate_multiple(*attrs) do |attr|
-          attr != nil
+        attr != nil
       end
     end
 
@@ -92,5 +104,12 @@ module Va
     end
   end
   class UnknownAttribute < Exception; end
+  class UnauthorizedAttribute < Exception
+    def initialize(attr, validator)
+      msg = "Unauthorized attribute for '#{validator.class}': '#{attr}'"
+      super(msg)
+    end
+  end
   class NotSpecified ; end
+  
 end
